@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cthulhu Mythos Investigation</title>
+    <!-- 
+    Cthulhu Mythos Investigation Desktop
+    Author: Gemini
+    Created for: Blaine Fisher
+    Date: 2025-07-09
+    Version: 2.0
+
+    Features:
+    - Merged functionality from "Himalayan Enigma" into the Cthulhu theme.
+    - Added widget selector modal to add/remove widgets.
+    - Widgets are now closable and collapsible.
+    - Added new themed widgets: Ritual Candle, Puzzle Box, Conspiracy Map, Daily Rituals, etc.
+    - Enhanced state management for all widget properties (visibility, position, content).
+    - Upgraded ambient audio to a more complex, dissonant hum using multiple oscillators.
+    - Retained core Cthulhu theme elements: Sanity Meter, screen distortion, Elder Signs.
+    -->
+    <style>
+        /* --- FONT IMPORT (BASE64 for offline use) --- */
+        @font-face {
+            font-family: 'Uncial Antiqua';
+            font-style: normal;
+            font-weight: 400;
+            src: url(data:font/woff2;base64,d09GMgABAAAAAAV0AAsAAAAACPgAAAUoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAVA1iWAIICg4ACAE2AiQDBgsEAAQgBYsdByAbkAyILH8jB691jVzYIBwVkv9//z/u3b4bY2aT4KNgojHAEIifkUe3zdsx5g8SgQAjE2OfBAwE+QkQJG4EFpXpT8P//3/y/9v/P/7f+f/z/+//v/7/+//3/9//v/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7/+///f/7-2.0.0.css) format('woff2');
+        }
+
+        /* --- GLOBAL STYLES & THEME --- */
+        :root {
+            --text-color: #a3b8a3; /* Pale, sickly green */
+            --bg-color: #1a1a1d; /* Deep, near black */
+            --widget-bg: #2b202b; /* Dark purple/grey */
+            --widget-bg-trans: rgba(43, 32, 43, 0.85);
+            --border-color: #4a2a4a; /* Murky purple */
+            --accent-color: #7c45a3; /* Vibrant, arcane purple */
+            --highlight-color: #49a09d; /* Deep sea green */
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --font-family: 'Uncial Antiqua', cursive;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%; width: 100%; overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: var(--font-family);
+            color: var(--text-color);
+            font-size: 14px;
+            user-select: none;
+        }
+        
+        #desktop {
+            width: 100%; height: 100%;
+            background-color: #1a1d2e;
+            background-image:
+                radial-gradient(circle at center, rgba(124, 69, 163, 0.1) 0%, transparent 60%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%232b202b' fill-opacity='0.2'%3E%3Cpath fill-rule='evenodd' d='M11 0l5 20-5-5-5 5L11 0zM21 11l20 5-5-5-5-5L21 11zM41 11l20 5-5-5-5-5L41 11zM61 11l20 5-5-5-5-5L61 11zM0 21l5 20-5-5-5 5L0 21zM11 21l20 5-5-5-5-5L11 21zM31 21l20 5-5-5-5-5L31 21zM51 21l20 5-5-5-5-5L51 21zM71 21l5 20-5-5-5 5L71 21zM11 41l20 5-5-5-5-5L11 41zM31 41l20 5-5-5-5-5L31 41zM51 41l20 5-5-5-5-5L51 41zM0 61l5 20-5-5-5 5L0 61zM11 61l20 5-5-5-5-5L11 61zM31 61l20 5-5-5-5-5L31 61zM51 61l20 5-5-5-5-5L51 61zM71 61l5 20-5-5-5 5L71 61z'/%3E%3C/g%3E%3C/svg%3E");
+            position: relative;
+        }
+
+        #sanity-distortion-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; opacity: 0;
+            backdrop-filter: blur(0px) contrast(100%) saturate(100%);
+            transition: backdrop-filter 2s ease-in-out, opacity 2s ease-in-out;
+        }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.9; } }
+        body.insane #sanity-distortion-overlay {
+            opacity: 1; backdrop-filter: blur(1px) contrast(150%) saturate(50%);
+            animation: flicker 10s infinite alternate;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+
+        /* --- WIDGET STYLES --- */
+        .widget {
+            position: absolute; background-color: var(--widget-bg-trans); backdrop-filter: blur(3px);
+            box-shadow: 0 0 25px var(--shadow-color), inset 0 0 15px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; min-width: 250px; min-height: 48px;
+            resize: both; overflow: hidden; border: 12px solid;
+            border-image: url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 H36 V36 H0 Z' fill='%232b202b'/%3E%3Cpath d='M3 12 C3 6, 6 3, 12 3 L24 3 C30 3, 33 6, 33 12 L33 24 C33 30, 30 33, 24 33 L12 33 C6 33, 3 30, 3 24 Z' stroke='%234a2a4a' stroke-width='2' fill='none'/%3E%3Ccircle cx='6' cy='6' r='2' fill='%237c45a3'/%3E%3Ccircle cx='30' cy='6' r='2' fill='%237c45a3'/%3E%3Ccircle cx='6' cy='30' r='2' fill='%237c45a3'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%237c45a3'/%3E%3C/svg%3E") 12 stretch;
+        }
+        .widget.collapsed { height: 48px !important; min-height: 48px; resize: none; }
+        .widget.collapsed .widget-content { display: none; }
+
+        .widget-header {
+            background-color: var(--border-color); padding: 6px 12px; cursor: move; font-weight: bold;
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-color); text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .widget-header .title { text-transform: uppercase; letter-spacing: 2px; flex-grow: 1; }
+        .widget-header-controls { display: flex; gap: 8px; }
+        .widget-header-controls span { cursor: pointer; font-family: monospace; font-size: 1.4rem; }
+        .widget-header-controls span:hover { color: var(--highlight-color); }
+
+        .widget-content { padding: 15px; flex-grow: 1; overflow-y: auto; overflow-x: hidden; }
+        .widget-content::-webkit-scrollbar { width: 12px; }
+        .widget-content::-webkit-scrollbar-track { background: var(--widget-bg); }
+        .widget-content::-webkit-scrollbar-thumb { background-color: var(--border-color); border: 3px solid var(--widget-bg); border-radius: 6px; }
+
+        /* --- UI ELEMENT STYLES --- */
+        button, input, textarea {
+            background-color: rgba(0,0,0, 0.2); border: 1px solid var(--border-color);
+            color: var(--text-color); font-family: var(--font-family);
+            padding: 8px; outline: none; font-size: 1.1rem; border-radius: 0;
+        }
+        button {
+            cursor: pointer; padding: 8px 12px; text-transform: uppercase;
+            border: 2px solid var(--accent-color); background-color: transparent;
+            font-weight: bold; transition: all 0.2s ease-in-out;
+            text-shadow: 0 0 5px var(--accent-color);
+        }
+        button:hover { background-color: var(--accent-color); color: var(--bg-color); box-shadow: 0 0 15px var(--accent-color); }
+        button:active { transform: translateY(1px); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        input, textarea { width: 100%; }
+        input[type="checkbox"] { display: none; }
+        .elder-sign-checkbox {
+            width: 24px; height: 24px; border: 2px solid var(--accent-color);
+            display: inline-block; vertical-align: middle; cursor: pointer; position: relative;
+        }
+        .elder-sign-checkbox svg {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            width: 80%; height: 80%; fill: var(--accent-color); transition: transform 0.2s ease;
+        }
+        input[type="checkbox"]:checked + .elder-sign-checkbox svg { transform: translate(-50%, -50%) scale(1); }
+        .delete-item { cursor: pointer; margin-left: 10px; font-weight: bold; opacity: 0.7; }
+        .delete-item:hover { color: #ff6b6b; opacity: 1; }
+        
+        /* --- WIDGET SPECIFIC STYLES --- */
+        #nocturnarium-widget .widget-content { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #clock-time { font-size: 3.5rem; letter-spacing: 3px; }
+        #clock-date { font-size: 1.3rem; margin-top: 5px; opacity: 0.8; }
+        #todo-list li { display: flex; align-items: center; margin-bottom: 10px; }
+        #todo-list li span { flex-grow: 1; margin-left: 12px; cursor: text; font-size: 1.2rem; }
+        #todo-list li.done span { text-decoration: line-through; opacity: 0.5; }
+        #forbidden-lore-widget .widget-content { font-size: 1.4rem; line-height: 1.7; font-style: italic; text-align: center; display: flex; align-items: center; justify-content: center; }
+        #calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+        #calendar-grid div { padding: 5px; position: relative; }
+        #calendar-grid .day-name { font-weight: bold; opacity: 0.7; }
+        #calendar-grid .today { background-color: var(--accent-color); color: var(--bg-color); border-radius: 2px; font-weight: bold; }
+        #calendar-grid .highlight-day { color: #ff6b6b; font-weight: bold; text-shadow: 0 0 5px #ff6b6b; }
+        .occult-symbol { position: absolute; top: 2px; right: 2px; font-size: 0.8rem; opacity: 0.3; }
+        .progress-bar-container { width: 100%; height: 20px; border: 2px solid var(--accent-color); background-color: rgba(0,0,0,0.3); padding: 2px; }
+        .progress-bar-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--highlight-color), #81c784); transition: width 1s linear; }
+        .progress-bar-fill.low { background: linear-gradient(90deg, #ffb74d, #ffd54f); }
+        .progress-bar-fill.critical { background: linear-gradient(90deg, #e57373, #f06292); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        #ritual-candle-container { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        #candle { width: 20px; height: 120px; background: linear-gradient(to top, #614385 0%, #516395 100%); border: 2px solid #111; position: relative; }
+        #candle-melt { position: absolute; bottom: 0; width: 100%; background-color: var(--accent-color); }
+        #conspiracy-board, #puzzle-box-content { background: transparent; border: none; resize: none; height: 100%; padding: 0; }
+
+        /* --- UTILITY & OVERLAY STYLES --- */
+        #bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; background: var(--border-color);
+            padding: 5px 15px; display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; font-size: 1.2rem; color: var(--text-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); box-shadow: 0 -2px 10px var(--shadow-color);
+        }
+        #bottom-bar-left, #bottom-bar-right { display: flex; gap: 15px; align-items: center; }
+        #bottom-bar button { color: var(--text-color); border-color: var(--accent-color); }
+        #bottom-bar button:hover { background-color: var(--accent-color); color: var(--bg-color); }
+        .modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--widget-bg);
+            border: 12px solid; border-image: url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 H36 V36 H0 Z' fill='%232b202b'/%3E%3Cpath d='M3 12 C3 6, 6 3, 12 3 L24 3 C30 3, 33 6, 33 12 L33 24 C33 30, 30 33, 24 33 L12 33 C6 33, 3 30, 3 24 Z' stroke='%234a2a4a' stroke-width='2' fill='none'/%3E%3Ccircle cx='6' cy='6' r='2' fill='%237c45a3'/%3E%3Ccircle cx='30' cy='6' r='2' fill='%237c45a3'/%3E%3Ccircle cx='6' cy='30' r='2' fill='%237c45a3'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%237c45a3'/%3E%3C/svg%3E") 12 stretch;
+            box-shadow: 0 0 40px rgba(124, 69, 163, 0.5); padding: 20px; z-index: 9999;
+            display: none; flex-direction: column; align-items: center; gap: 15px;
+            min-width: 400px; text-align: center;
+        }
+        #widget-selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="sanity-distortion-overlay"></div>
+    <div id="desktop">
+        <!-- All widgets are now generated by JS -->
+        <div class="widget" id="nocturnarium-widget" data-id="nocturnarium-widget"></div>
+        <div class="widget" id="todo-widget" data-id="todo-widget"></div>
+        <div class="widget" id="forbidden-lore-widget" data-id="forbidden-lore-widget"></div>
+        <div id="tome-container"></div>
+        <div class="widget" id="calculator-widget" data-id="calculator-widget"></div>
+        <div class="widget" id="calendar-widget" data-id="calendar-widget"></div>
+        <div class="widget" id="ritual-candle-widget" data-id="ritual-candle-widget"></div>
+        <div class="widget" id="daily-ritual-widget" data-id="daily-ritual-widget"></div>
+        <div class="widget" id="cult-cells-widget" data-id="cult-cells-widget"></div>
+        <div class="widget" id="tithes-widget" data-id="tithes-widget"></div>
+        <div class="widget" id="whispers-widget" data-id="whispers-widget"></div>
+        <div class="widget" id="puzzle-box-widget" data-id="puzzle-box-widget"></div>
+        <div class="widget" id="conspiracy-map-widget" data-id="conspiracy-map-widget"></div>
+    </div>
+
+    <div id="bottom-bar">
+        <div id="bottom-bar-left">
+            <button id="add-tome-btn">+ NEW TOME</button>
+            <button id="add-widget-btn">+ ARTIFACT</button>
+        </div>
+        <div id="bottom-bar-right">
+            <div id="sanity-meter-container" style="display: flex; align-items: center; gap: 5px;">
+                <span>SANITY:</span>
+                <div class="progress-bar-container" style="width: 150px; height: 15px;">
+                    <div id="sanity-progress-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+            <div id="sound-player">
+                <span>AETHER:</span>
+                <button id="sound-toggle-btn">SILENT</button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.3" style="vertical-align: middle; width: 80px;">
+            </div>
+            <button id="reset-btn">DESCEND</button>
+        </div>
+    </div>
+    
+    <div id="custom-alert" class="modal">
+        <div id="custom-alert-message"></div>
+        <button id="custom-alert-ok">...I Understand.</button>
+    </div>
+
+    <div id="widget-selector-modal" class="modal">
+        <h3 style="text-transform: uppercase; letter-spacing: 1px;">Summon Artifact</h3>
+        <div id="widget-selector-grid"></div>
+        <button id="widget-selector-close">Dismiss</button>
+    </div>
+    
+    <div id="reset-confirm-modal" class="modal">
+        <h4>Embrace Madness?</h4>
+        <p style="font-size: 1.1rem;">All artifacts and memories will be lost to the void.</p>
+        <div class="controls" style="display:flex; gap: 10px;">
+            <button id="reset-confirm-btn" style="background-color: #c0392b; color: var(--bg-color); border-color: #c0392b;">Confirm Descent</button>
+            <button id="reset-cancel-btn">Cling to Sanity</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const storagePrefix = 'cthulhuMythos_';
+    const ELDER_SIGN_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="translate(50,50) rotate(-90)"><path d="M0,-45 L12,-15 L40,-15 L18,5 L25,35 L0,15 L-25,35 L-18,5 L-40,-15 L-12,-15 Z" stroke-width="8" stroke="currentColor" fill="none"/><circle cx="0" cy="0" r="10" fill="currentColor"/></g></svg>`;
+
+    // --- AUDIO SETUP ---
+    const audio = { context: null, masterGain: null, humOscillators: [], isPlaying: false };
+
+    function initAudioSystem() {
+        if (audio.context) return;
+        try {
+            audio.context = new (window.AudioContext || window.webkitAudioContext)();
+            audio.masterGain = audio.context.createGain();
+            audio.masterGain.connect(audio.context.destination);
+            const volumeSlider = document.getElementById('volume-slider');
+            audio.masterGain.gain.value = volumeSlider.value;
+            volumeSlider.addEventListener('input', () => {
+                if (audio.masterGain) audio.masterGain.gain.setValueAtTime(parseFloat(volumeSlider.value), audio.context.currentTime);
+            });
+        } catch (e) { console.error("Web Audio API is not supported.", e); document.getElementById('sound-player').style.display = 'none'; }
+    }
+    document.body.addEventListener('click', initAudioSystem, { once: true });
+
+    const playSound = (type) => {
+        if (!audio.context || !audio.masterGain) return;
+        if (audio.context.state === 'suspended') audio.context.resume();
+        const sound = audio.context.createOscillator();
+        const gainNode = audio.context.createGain();
+        sound.connect(gainNode);
+        gainNode.connect(audio.masterGain);
+        if (type === 'click') {
+            const noise = audio.context.createBufferSource();
+            const buffer = audio.context.createBuffer(1, 4096, audio.context.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < 4096; i++) data[i] = Math.random() * 2 - 1;
+            noise.buffer = buffer;
+            const noiseFilter = audio.context.createBiquadFilter();
+            noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 800;
+            noise.connect(noiseFilter).connect(gainNode);
+            gainNode.gain.setValueAtTime(0.2, audio.context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audio.context.currentTime + 0.2);
+            noise.start(audio.context.currentTime); noise.stop(audio.context.currentTime + 0.2);
+        } else if (type === 'notify') {
+            sound.type = 'sawtooth'; sound.frequency.setValueAtTime(300, audio.context.currentTime);
+            sound.detune.setValueAtTime(15, audio.context.currentTime);
+            gainNode.gain.setValueAtTime(0.4, audio.context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audio.context.currentTime + 2.5);
+            sound.start(audio.context.currentTime); sound.stop(audio.context.currentTime + 2.5);
+        }
+    };
+    
+    const showAlert = (message) => {
+        playSound('notify');
+        document.getElementById('custom-alert-message').textContent = message;
+        document.getElementById('custom-alert').style.display = 'flex';
+    };
+    document.getElementById('custom-alert-ok').addEventListener('click', () => {
+        document.getElementById('custom-alert').style.display = 'none';
+        playSound('click');
+    });
+
+    // --- WIDGET & STATE MANAGEMENT ---
+    function makeWidgetInteractive(widget) {
+        const header = widget.querySelector('.widget-header');
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (header) header.onmousedown = dragMouseDown;
+        function dragMouseDown(e) {
+            if (e.target.matches('.widget-header-controls span')) return;
+            e.preventDefault(); pos3 = e.clientX; pos4 = e.clientY;
+            document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+        }
+        function elementDrag(e) {
+            e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+            pos3 = e.clientX; pos4 = e.clientY;
+            widget.style.top = (widget.offsetTop - pos2) + "px";
+            widget.style.left = (widget.offsetLeft - pos1) + "px";
+        }
+        function closeDragElement() {
+            document.onmouseup = null; document.onmousemove = null; saveAllWidgetStates();
+        }
+        new ResizeObserver(saveAllWidgetStates).observe(widget);
+    }
+
+    function getWidgetState(widgetId) { const allStates = JSON.parse(localStorage.getItem(storagePrefix + 'widgetStates')) || {}; return allStates[widgetId] || {}; }
+    function saveWidgetState(widgetId, data) {
+        const allStates = JSON.parse(localStorage.getItem(storagePrefix + 'widgetStates')) || {};
+        allStates[widgetId] = { ...allStates[widgetId], ...data };
+        localStorage.setItem(storagePrefix + 'widgetStates', JSON.stringify(allStates));
+    }
+    function saveAllWidgetStates() {
+        const allStates = JSON.parse(localStorage.getItem(storagePrefix + 'widgetStates')) || {};
+        document.querySelectorAll('.widget').forEach(w => {
+            const id = w.dataset.id; if (!id) return;
+            allStates[id] = { ...allStates[id], top: w.style.top, left: w.style.left, width: w.style.width, height: w.style.height, visible: w.style.display !== 'none', collapsed: w.classList.contains('collapsed') };
+        });
+        localStorage.setItem(storagePrefix + 'widgetStates', JSON.stringify(allStates));
+    }
+
+    const widgetDefinitions = {
+        'nocturnarium-widget': { name: 'Nocturnarium', init: initClock, defaultState: { visible: true, top: '30px', left: '30px', width: '400px', height: '160px' } },
+        'todo-widget': { name: 'Elder Sign Rituals', init: initTodo, defaultState: { visible: true, top: '210px', left: '30px', width: '400px', height: '350px' } },
+        'forbidden-lore-widget': { name: 'Forbidden Lore', init: initForbiddenLore, defaultState: { visible: true, top: '30px', left: '450px', width: '350px', height: '160px' } },
+        'calculator-widget': { name: 'Runic Calculator', init: initCalculator, defaultState: { visible: false, top: '580px', left: '30px', width: '280px', height: '310px' } },
+        'calendar-widget': { name: 'Arcane Calendar', init: initCalendar, defaultState: { visible: true, top: '210px', right: '30px', left: 'auto', width: '350px', height: '280px' } },
+        'ritual-candle-widget': { name: 'Ritual Candle', init: initRitualCandle, defaultState: { visible: true, top: '510px', right: '30px', left: 'auto', width: '350px', height: '220px' } },
+        'daily-ritual-widget': { name: 'Daily Incantations', init: initDailyRitual, defaultState: { visible: false, top: '200px', left: '450px', width: '350px', height: '200px' } },
+        'cult-cells-widget': { name: 'Conjunction Clocks', init: initCultClocks, defaultState: { visible: false, top: '410px', left: '450px', width: '350px', height: '200px' } },
+        'tithes-widget': { name: 'Sacrificial Tithes', init: initTithes, defaultState: { visible: false, top: '620px', left: '450px', width: '350px', height: '250px' } },
+        'whispers-widget': { name: 'Whispers from the Void', init: initWhispers, defaultState: { visible: false, top: '30px', left: '820px', width: '350px', height: '250px' } },
+        'puzzle-box-widget': { name: 'Puzzle Box', init: initPuzzleBox, defaultState: { visible: true, top: '580px', left: '30px', width: '400px', height: '200px' } },
+        'conspiracy-map-widget': { name: 'Conspiracy Map', init: initConspiracyMap, defaultState: { visible: false, top: '300px', left: '820px', width: '350px', height: '300px' } },
+    };
+
+    function initializeDesktop() {
+        Object.keys(widgetDefinitions).forEach(id => {
+            const widget = document.getElementById(id); if (!widget) return;
+            const savedState = getWidgetState(id); const defaultState = widgetDefinitions[id].defaultState;
+            const state = { ...defaultState, ...savedState };
+            widget.style.top = state.top || ''; widget.style.left = state.left || '';
+            widget.style.right = state.right || ''; if (state.left === 'auto') widget.style.left = '';
+            widget.style.width = state.width || ''; widget.style.height = state.height || '';
+            widget.style.display = state.visible ? 'flex' : 'none';
+            if (state.collapsed) widget.classList.add('collapsed');
+            widgetDefinitions[id].init(id, state); makeWidgetInteractive(widget);
+        });
+        initTomes();
+    }
+
+    function buildWidgetHeader(widgetId, title) {
+        const widget = document.getElementById(widgetId);
+        widget.innerHTML = `<div class="widget-header"><span class="title">${title}</span><div class="widget-header-controls"><span class="collapse-btn" title="Collapse">_</span><span class="close-btn" title="Close">X</span></div></div><div class="widget-content"></div>`;
+        widget.querySelector('.close-btn').addEventListener('click', () => { widget.style.display = 'none'; saveWidgetState(widgetId, { visible: false }); });
+        widget.querySelector('.collapse-btn').addEventListener('click', () => { widget.classList.toggle('collapsed'); saveWidgetState(widgetId, { collapsed: widget.classList.contains('collapsed') }); });
+        return widget.querySelector('.widget-content');
+    }
+
+    // --- WIDGET IMPLEMENTATIONS ---
+
+    function initClock(id) {
+        const content = buildWidgetHeader(id, 'NOCTURNARIUM');
+        content.innerHTML = `<div id="clock-time">00:00:00</div><div id="clock-date">The First Day</div>`;
+        const timeEl = content.querySelector('#clock-time'), dateEl = content.querySelector('#clock-date');
+        const update = () => { const now = new Date(); timeEl.textContent = now.toLocaleTimeString('en-GB'); dateEl.textContent = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); };
+        setInterval(update, 1000); update();
+    }
+
+    function initTodo(id) {
+        const content = buildWidgetHeader(id, 'ELDER SIGN RITUALS');
+        content.innerHTML = `<ul id="todo-list"></ul><input type="text" id="new-task-input" placeholder="New incantation...">`;
+        const listEl = content.querySelector('#todo-list'), inputEl = content.querySelector('#new-task-input');
+        let state = getWidgetState(id); let tasks = state.tasks || [];
+        const save = () => saveWidgetState(id, { tasks });
+        const render = () => {
+            listEl.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li'); li.className = task.done ? 'done' : '';
+                li.innerHTML = `<input type="checkbox" id="task-${id}-${index}" data-index="${index}" ${task.done ? 'checked' : ''}><label for="task-${id}-${index}" class="elder-sign-checkbox">${ELDER_SIGN_SVG}</label><span contenteditable="true" data-index="${index}">${task.text}</span><span class="delete-item" data-index="${index}">[X]</span>`;
+                listEl.appendChild(li);
+            });
+        };
+        inputEl.addEventListener('keypress', e => { if (e.key === 'Enter' && inputEl.value.trim() !== '') { tasks.push({ text: inputEl.value.trim(), done: false }); inputEl.value = ''; save(); render(); } });
+        listEl.addEventListener('change', e => { const i = e.target.dataset.index; if (e.target.matches('input[type="checkbox"]')) { tasks[i].done = e.target.checked; save(); render(); } });
+        listEl.addEventListener('click', e => { if (e.target.matches('.delete-item')) { tasks.splice(e.target.dataset.index, 1); save(); render(); } });
+        listEl.addEventListener('blur', e => { if (e.target.matches('span[contenteditable]')) { tasks[e.target.dataset.index].text = e.target.textContent; save(); } }, true);
+        render();
+    }
+    
+    function initForbiddenLore(id) {
+        const content = buildWidgetHeader(id, 'FORBIDDEN LORE');
+        content.parentElement.id = 'forbidden-lore-widget';
+        const lore = ["The oldest and strongest emotion of mankind is fear, and the oldest and strongest kind of fear is fear of the unknown.", "That is not dead which can eternal lie, And with strange aeons even death may die.", "We live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.", "The world is indeed comic, but the joke is on mankind.", "From even the greatest of horrors, irony is seldom absent."];
+        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        content.innerHTML = `<p>"${lore[dayOfYear % lore.length]}"</p>`;
+    }
+
+    function initRitualCandle(id) {
+        const content = buildWidgetHeader(id, 'RITUAL CANDLE');
+        content.innerHTML = `
+            <div id="ritual-candle-container">
+                <div id="candle"><div id="candle-melt"></div></div>
+                <div class="controls" style="display:flex; gap: 5px; justify-content: center;">
+                    <button data-time="300">5 min</button>
+                    <button data-time="900">15 min</button>
+                    <button data-time="1800">30 min</button>
+                </div>
+            </div>`;
+        const meltEl = content.querySelector('#candle-melt');
+        let timer;
+        content.querySelector('.controls').addEventListener('click', e => {
+            if (e.target.matches('button')) {
+                playSound('click'); clearInterval(timer);
+                const duration = parseInt(e.target.dataset.time, 10);
+                meltEl.style.transition = 'none'; meltEl.style.height = '100%';
+                void meltEl.offsetWidth; // Trigger reflow
+                meltEl.style.transition = `height ${duration}s linear`; meltEl.style.height = '0%';
+                timer = setTimeout(() => showAlert("The candle has extinguished. The ritual is complete."), duration * 1000);
+            }
+        });
+    }
+
+    function initDailyRitual(id) {
+        const content = buildWidgetHeader(id, 'DAILY INCANTATIONS');
+        content.innerHTML = `<input type="text" id="habit-name" placeholder="Name the incantation..."><div id="habit-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; justify-items: center;"></div>`;
+        const nameInput = content.querySelector('#habit-name'), grid = content.querySelector('#habit-grid');
+        let state = getWidgetState(id); let habit = state.habit || { name: '', days: Array(7).fill(false) };
+        const save = () => saveWidgetState(id, { habit });
+        const render = () => {
+            nameInput.value = habit.name; grid.innerHTML = '';
+            habit.days.forEach((done, index) => {
+                const dayEl = document.createElement('div');
+                dayEl.innerHTML = `<input type="checkbox" id="habit-${id}-${index}" data-day="${index}" ${done ? 'checked' : ''}><label for="habit-${id}-${index}" class="elder-sign-checkbox">${ELDER_SIGN_SVG}</label>`;
+                grid.appendChild(dayEl);
+            });
+        };
+        nameInput.addEventListener('change', () => { habit.name = nameInput.value; save(); });
+        grid.addEventListener('change', e => {
+            if (e.target.matches('input[type="checkbox"]')) {
+                const dayIndex = e.target.dataset.day; habit.days[dayIndex] = e.target.checked;
+                save(); render();
+            }
+        });
+        render();
+    }
+
+    function initCultClocks(id) {
+        const content = buildWidgetHeader(id, 'CONJUNCTION CLOCKS');
+        content.innerHTML = `<div id="world-clocks-container" style="display: flex; flex-direction: column; gap: 10px; text-align: center;"></div>`;
+        const container = content.querySelector('#world-clocks-container');
+        const timezones = { 'R\'lyeh': 'Etc/GMT+12', 'Innsmouth': 'America/New_York', 'Arkham': 'America/New_York', 'Yuggoth': 'Etc/GMT-10' };
+        const render = () => {
+            container.innerHTML = '';
+            for (const [city, zone] of Object.entries(timezones)) {
+                const time = new Date().toLocaleTimeString('en-GB', { timeZone: zone, hour: '2-digit', minute: '2-digit' });
+                container.innerHTML += `<div class="world-clock" style="font-size: 1.4rem;"><strong>${city}:</strong> ${time}</div>`;
+            }
+        };
+        setInterval(render, 1000); render();
+    }
+    
+    function initTithes(id) {
+        const content = buildWidgetHeader(id, 'SACRIFICIAL TITHES');
+        content.innerHTML = `<ul id="ledger-list"></ul><div id="ledger-total" style="margin-top: 10px; text-align: right; font-weight: bold; font-size: 1.2rem;">TOTAL: 0</div><div class="controls" style="display:flex; gap: 5px; margin-top: 5px;"><input type="text" id="ledger-item-name" placeholder="Offering"><input type="number" id="ledger-item-cost" placeholder="Essence" style="width: 100px;"><button id="add-ledger-item">+</button></div>`;
+        const listEl = content.querySelector('#ledger-list'), totalEl = content.querySelector('#ledger-total'), nameInput = content.querySelector('#ledger-item-name'), costInput = content.querySelector('#ledger-item-cost'), addBtn = content.querySelector('#add-ledger-item');
+        let state = getWidgetState(id); let items = state.items || [];
+        const save = () => saveWidgetState(id, { items });
+        const render = () => {
+            listEl.innerHTML = ''; let total = 0;
+            items.forEach((item, index) => {
+                listEl.innerHTML += `<li style="display:flex; align-items:center; margin-bottom: 5px;"><div style="display: flex; justify-content: space-between; width: 100%;"><span>${item.name}</span><span>${item.cost}</span></div><span class="delete-item" data-index="${index}">[X]</span></li>`;
+                total += item.cost;
+            });
+            totalEl.textContent = `TOTAL ESSENCE: ${total}`;
+        };
+        addBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim(), cost = parseFloat(costInput.value);
+            if (name && !isNaN(cost)) { items.push({ name, cost }); save(); render(); nameInput.value = ''; costInput.value = ''; }
+        });
+        listEl.addEventListener('click', e => { if (e.target.matches('.delete-item')) { items.splice(e.target.dataset.index, 1); save(); render(); } });
+        render();
+    }
+
+    function initWhispers(id) {
+        const content = buildWidgetHeader(id, 'WHISPERS FROM THE VOID');
+        content.innerHTML = `<ul id="telegram-list" style="list-style:none;"></ul>`;
+        const listEl = content.querySelector('#telegram-list');
+        const messages = ["IT SEES YOU...", "THE STARS ARE ALMOST RIGHT...", "A SHADOW MOVES AT THE EDGE OF YOUR VISION...", "THE ANGLES ARE WRONG...", "HE IS DREAMING...", "SOMETHING IS SCRATCHING AT THE DOOR..."];
+        let msgIndex = 0;
+        listEl.innerHTML = `<li style="opacity:0.5;">-- LISTENING TO THE VOID --</li>`;
+        setInterval(() => {
+            if (document.getElementById(id).style.display !== 'none') {
+                const li = document.createElement('li');
+                li.style.cssText = 'padding: 5px; border-bottom: 1px dashed var(--border-color); opacity:0; transition: opacity 1s;';
+                li.textContent = messages[msgIndex % messages.length];
+                listEl.prepend(li);
+                setTimeout(() => li.style.opacity = 1, 50);
+                if (listEl.children.length > 10) listEl.lastChild.remove();
+                msgIndex++;
+            }
+        }, 20000);
+    }
+    
+    function initPuzzleBox(id) {
+        const content = buildWidgetHeader(id, 'PUZZLE BOX');
+        let state = getWidgetState(id);
+        state.isLocked = state.password ? (state.isLocked === false ? false : true) : false;
+        state.contentText = state.contentText || "";
+
+        const render = () => {
+            content.innerHTML = '';
+            const prompt = state.password ? 'Enter the sequence:' : 'Set a 4-symbol sequence:';
+            const buttonText = state.password ? 'Unseal' : 'Set & Seal';
+            const inputType = state.isLocked ? 'password' : 'text';
+            if (state.isLocked || !state.password) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 10px;"><div>${prompt}</div>
+                        <div style="display: flex; gap: 5px; justify-content: center; margin: 10px 0;">
+                            <input type="${inputType}" maxlength="1" class="combo-input" style="width: 30px; text-align: center; font-size: 1.5rem;">
+                            <input type="${inputType}" maxlength="1" class="combo-input" style="width: 30px; text-align: center; font-size: 1.5rem;">
+                            <input type="${inputType}" maxlength="1" class="combo-input" style="width: 30px; text-align: center; font-size: 1.5rem;">
+                            <input type="${inputType}" maxlength="1" class="combo-input" style="width: 30px; text-align: center; font-size: 1.5rem;">
+                        </div>
+                        <button id="combo-action-btn">${buttonText}</button>
+                        <div class="safe-error" style="color: #ff6b6b; margin-top: 5px; height: 15px;"></div>
+                    </div>`;
+                content.querySelector('#combo-action-btn').addEventListener('click', state.password ? handleUnlock : handleSetPassword);
+            } else { // Unlocked
+                content.innerHTML = `<textarea id="puzzle-box-content" placeholder="Inscribe your secrets...">${state.contentText}</textarea><button id="lock-btn" style="width: 100%; margin-top: 5px;">Seal Box</button>`;
+                content.querySelector('#lock-btn').addEventListener('click', handleLock);
+                content.querySelector('#puzzle-box-content').addEventListener('change', (e) => {
+                    state.contentText = e.target.value;
+                    saveWidgetState(id, { contentText: state.contentText });
+                });
+            }
+            const comboInputs = content.querySelectorAll('.combo-input');
+            if (comboInputs.length > 0) {
+                comboInputs[0].focus();
+                comboInputs.forEach((input, index) => {
+                    input.addEventListener('input', () => { if (input.value && index < comboInputs.length - 1) comboInputs[index + 1].focus(); });
+                    input.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !input.value && index > 0) comboInputs[index - 1].focus(); });
+                });
+            }
+        };
+        const getCombination = () => Array.from(content.querySelectorAll('.combo-input')).map(i => i.value).join('');
+        const displayError = (message) => { const el = content.querySelector('.safe-error'); if (el) { el.textContent = message; setTimeout(() => { if(el) el.textContent = ''; }, 2000); }};
+        const handleSetPassword = () => {
+            const newPassword = getCombination();
+            if (newPassword.length === 4) {
+                state.password = newPassword; state.isLocked = false;
+                saveWidgetState(id, { password: state.password, isLocked: state.isLocked });
+                playSound('click'); render();
+            } else { displayError("Sequence must be 4 symbols."); }
+        };
+        const handleUnlock = () => {
+            if (getCombination() === state.password) {
+                state.isLocked = false; saveWidgetState(id, { isLocked: false });
+                playSound('click'); render();
+            } else {
+                displayError("Incorrect sequence.");
+                const widget = document.getElementById(id); widget.style.animation = 'shake 0.5s';
+                setTimeout(() => widget.style.animation = '', 500);
+            }
+        };
+        const handleLock = () => { state.isLocked = true; saveWidgetState(id, { isLocked: true }); playSound('click'); render(); };
+        render();
+    }
+
+    function initConspiracyMap(id) {
+        const content = buildWidgetHeader(id, 'CONSPIRACY MAP');
+        content.innerHTML = `<textarea id="conspiracy-board" placeholder="Connect the threads of madness..."></textarea>`;
+        const textarea = content.querySelector('#conspiracy-board');
+        let state = getWidgetState(id);
+        textarea.value = state.text || '';
+        textarea.addEventListener('change', () => saveWidgetState(id, { text: textarea.value }));
+    }
+
+    // --- LEGACY WIDGETS (ADAPTED) ---
+    function initCalculator(id) {
+        const content = buildWidgetHeader(id, 'RUNIC CALCULATOR');
+        content.innerHTML = `<input type="text" id="calc-display" readonly style="text-align: right; margin-bottom: 5px; font-size: 1.8rem; padding: 5px;"><div id="calc-buttons" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;"><button>7</button><button>8</button><button>9</button><button class="op">/</button><button>4</button><button>5</button><button>6</button><button class="op">*</button><button>1</button><button>2</button><button>3</button><button class="op">-</button><button>0</button><button>.</button><button id="calc-clear">C</button><button class="op">+</button><button id="calc-equals" style="grid-column: span 4;">=</button></div>`;
+        const display = content.querySelector('#calc-display');
+        content.querySelector('#calc-buttons').addEventListener('click', (e) => {
+            if (!e.target.matches('button')) return;
+            const action = e.target.textContent;
+            if (e.target.id === 'calc-clear') display.value = '';
+            else if (e.target.id === 'calc-equals') { try { display.value = eval(display.value.replace(/[^-()\d/*+.]/g, '')); } catch { display.value = 'Error'; } }
+            else { display.value += action; }
+        });
+    }
+
+    function initCalendar(id) {
+        const content = buildWidgetHeader(id, 'ARCANE CALENDAR');
+        content.innerHTML = `<div id="calendar-header" style="text-align: center; margin-bottom: 10px; font-weight: bold;"></div><div id="calendar-grid"></div>`;
+        const calHead = content.querySelector('#calendar-header'), calGrid = content.querySelector('#calendar-grid'), now = new Date();
+        calHead.textContent = now.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }).toUpperCase();
+        ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => calGrid.innerHTML += `<div class="day-name">${day}</div>`);
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay(), daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const occultSymbols = ['⍝', '⏚', '⏛', '⏣', '⍟', '⏦', '♄', '♃'];
+        for (let i = 0; i < firstDay; i++) calGrid.appendChild(document.createElement('div'));
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayEl = document.createElement('div'); dayEl.textContent = i;
+            if (i === now.getDate()) dayEl.className = 'today';
+            if (now.getMonth() === 9 && i === 31) dayEl.classList.add('highlight-day');
+            if (Math.random() < 0.2) { const symbol = document.createElement('span'); symbol.className = 'occult-symbol'; symbol.textContent = occultSymbols[Math.floor(Math.random() * occultSymbols.length)]; dayEl.appendChild(symbol); }
+            calGrid.appendChild(dayEl);
+        }
+    }
+    
+    function initTomes() {
+        const container = document.getElementById('tome-container');
+        const addBtn = document.getElementById('add-tome-btn');
+        let notes = JSON.parse(localStorage.getItem(storagePrefix + 'tomes')) || [];
+        let noteCounter = localStorage.getItem(storagePrefix + 'tomeCounter') || 0;
+        function saveTomes() { localStorage.setItem(storagePrefix + 'tomes', JSON.stringify(notes)); localStorage.setItem(storagePrefix + 'tomeCounter', noteCounter); }
+        function createTomeElement(note) {
+            const noteEl = document.createElement('div');
+            noteEl.className = 'widget sticky-note'; noteEl.id = note.id; noteEl.dataset.id = note.id;
+            noteEl.style.cssText = `left:${note.left}; top:${note.top}; width:${note.width}; height:${note.height};`;
+            const content = buildWidgetHeader(note.id, 'FIELD TOME');
+            content.innerHTML = `<textarea placeholder="Scribble your findings...">${note.content}</textarea>`;
+            noteEl.querySelector('.widget-header .close-btn').addEventListener('click', (e) => { e.stopPropagation(); notes = notes.filter(n => n.id !== note.id); noteEl.remove(); saveTomes(); });
+            const textarea = content.querySelector('textarea');
+            const saveContent = () => { const n = notes.find(n => n.id === note.id); if (n) { n.content = textarea.value; saveTomes(); }};
+            textarea.addEventListener('change', saveContent);
+            container.appendChild(noteEl);
+            makeWidgetInteractive(noteEl);
+        }
+        addBtn.addEventListener('click', () => {
+            const newNote = { id: `tome-${noteCounter++}`, content: '', top: '250px', left: `${470 + ((notes.length) % 4) * 20}px`, width: '250px', height: '250px' };
+            notes.push(newNote); createTomeElement(newNote); saveTomes();
+        });
+        notes.forEach(createTomeElement);
+    }
+
+    // --- GLOBAL SYSTEMS ---
+    (function initSanityMeter() {
+        const fillEl = document.getElementById('sanity-progress-fill');
+        let sanity = parseFloat(localStorage.getItem(storagePrefix + 'sanity') || '100');
+        function updateSanity() {
+            sanity -= 0.01; if (sanity < 0) sanity = 0;
+            fillEl.style.width = `${sanity}%`;
+            fillEl.classList.toggle('low', sanity < 50 && sanity >= 20);
+            fillEl.classList.toggle('critical', sanity < 20);
+            document.body.classList.toggle('insane', sanity < 30);
+            localStorage.setItem(storagePrefix + 'sanity', sanity);
+        }
+        setInterval(updateSanity, 1000); updateSanity();
+    })();
+
+    (function initGlobalControls() {
+        const modal = document.getElementById('widget-selector-modal');
+        const grid = document.getElementById('widget-selector-grid');
+        Object.keys(widgetDefinitions).forEach(id => {
+            const btn = document.createElement('button'); btn.textContent = widgetDefinitions[id].name; btn.dataset.id = id;
+            grid.appendChild(btn);
+        });
+        grid.addEventListener('click', e => {
+            if (e.target.matches('button')) {
+                const widget = document.getElementById(e.target.dataset.id);
+                if (widget) { widget.style.display = 'flex'; saveWidgetState(widget.dataset.id, { visible: true }); }
+                modal.style.display = 'none';
+            }
+        });
+        document.getElementById('add-widget-btn').addEventListener('click', () => modal.style.display = 'flex');
+        document.getElementById('widget-selector-close').addEventListener('click', () => modal.style.display = 'none');
+        const resetModal = document.getElementById('reset-confirm-modal');
+        document.getElementById('reset-btn').addEventListener('click', () => { resetModal.style.display = 'flex'; });
+        document.getElementById('reset-cancel-btn').addEventListener('click', () => { resetModal.style.display = 'none'; });
+        document.getElementById('reset-confirm-btn').addEventListener('click', () => { localStorage.clear(); window.location.reload(); });
+
+        const toggleBtn = document.getElementById('sound-toggle-btn');
+        function startDissonance() {
+            if (!audio.context || audio.isPlaying) return;
+            const baseFreq = 40; // Deep, unsettling base
+            const frequencies = [baseFreq, baseFreq * 1.505, baseFreq * 2.01, baseFreq * 3.02]; // Slightly off harmonics for dissonance
+            const lfo = audio.context.createOscillator();
+            lfo.frequency.setValueAtTime(0.1, audio.context.currentTime); // Very slow waver
+            const lfoGain = audio.context.createGain();
+            lfoGain.gain.setValueAtTime(5, audio.context.currentTime); // Waver depth
+            lfo.connect(lfoGain); lfo.start(); audio.humOscillators.push(lfo);
+            frequencies.forEach(freq => {
+                const osc = audio.context.createOscillator(); osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, audio.context.currentTime);
+                lfoGain.connect(osc.detune); // Use LFO on detune for a more ghastly effect
+                const oscGain = audio.context.createGain();
+                oscGain.gain.setValueAtTime(0.02 / (freq / baseFreq), audio.context.currentTime);
+                osc.connect(oscGain).connect(audio.masterGain); osc.start(); audio.humOscillators.push(osc);
+            });
+            audio.isPlaying = true; toggleBtn.textContent = 'AUDIBLE';
+        }
+        function stopDissonance() {
+            if (!audio.isPlaying || !audio.humOscillators) return;
+            audio.humOscillators.forEach(osc => osc.stop(0));
+            audio.humOscillators = []; audio.isPlaying = false;
+            toggleBtn.textContent = 'SILENT';
+        }
+        toggleBtn.addEventListener('click', () => { 
+            if (!audio.context) return; if (audio.context.state === 'suspended') audio.context.resume(); 
+            audio.isPlaying ? stopDissonance() : startDissonance(); playSound('click'); 
+        });
+    })();
+    
+    document.body.addEventListener('click', (e) => { if (e.target.matches('button') && !e.target.closest('#sound-player') && !e.target.closest('.modal')) { playSound('click'); } });
+
+    initializeDesktop();
+});
+</script>
+
+</body>
+</html>
